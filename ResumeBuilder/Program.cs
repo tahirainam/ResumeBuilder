@@ -16,7 +16,11 @@ namespace ResumeBuilder
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            using (SplashScreen splashScreen = new SplashScreen())
+            {
+                splashScreen.ShowDialog();
+            }
+            Application.Run(new SplashScreen());
         }
     }
 }
