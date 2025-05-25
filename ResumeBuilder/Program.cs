@@ -20,7 +20,7 @@ namespace ResumeBuilder
             {
                 splashScreen.ShowDialog();
             }
-            Application.Run(new SplashScreen());
+            Application.Run(new RegistrationForm());
         }
     }
 }
