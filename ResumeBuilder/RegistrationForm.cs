@@ -98,17 +98,28 @@ namespace ResumeBuilder
                 return;
             }
 
-            SqlConnection con = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Rehbar\\Documents\\RegistrationDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True");
-            SqlCommand cmd = new SqlCommand("INSERT INTO Users VALUES ('" + txtBoxUserName.Text + "','" + txtBoxEmail.Text + "','" + txtBoxPassword.Text + "',)", con);
-            con.Open();
-            cmd.ExecuteNonQuery();
-            con.Close();
+            using (SqlConnection con = new SqlConnection(
+        @"Data Source=(LocalDB)\MSSQLLocalDB;
+          AttachDbFilename=|DataDirectory|\RegistrationDB.mdf;
+          Integrated Security=True"))
+            {
+                const string sql =
+                    "INSERT INTO Table (Username, Email, Password) " +
+                    "VALUES (@username, @email, @password)";
 
+                using (SqlCommand cmd = new SqlCommand(sql, con))
+                {
+                    cmd.Parameters.AddWithValue("@username", txtBoxUserName.Text);
+                    cmd.Parameters.AddWithValue("@email", txtBoxEmail.Text);
+                    cmd.Parameters.AddWithValue("@password", txtBoxPassword.Text);
 
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                    con.Close();
+                }
+            }
 
-
-            //Confirmation
-            MessageBox.Show("Account Registered", "Success");
+            MessageBox.Show("Account registered.");
         }
     }
 }
