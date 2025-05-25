@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace ResumeBuilder
 {
@@ -29,7 +32,18 @@ namespace ResumeBuilder
 
         private void textBox2_TextChanged(object sender, EventArgs e)
         {
+            if (!Regex.IsMatch(txtBoxPassword.Text, "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"))
+            {
+                txtPassword.Text = "Weak Password";
+                txtPassword.ForeColor = System.Drawing.Color.Red;
+            }
+            else
+            {
+                txtPassword.Text = "Strong Password";
+                txtPassword.ForeColor = System.Drawing.Color.Green;
 
+
+            }
         }
 
         private void txtPassword_Click(object sender, EventArgs e)
@@ -54,7 +68,47 @@ namespace ResumeBuilder
 
         private void button1_Click(object sender, EventArgs e)
         {
+            //Required Field
+            if (txtBoxUserName.Text == "" || txtBoxEmail.Text == "")
+            {
+                MessageBox.Show("Please Fill all required Fields Properly..", "Incomplete Form");
+                return;
+            }
 
+
+            //Password Matching
+            if (txtBoxPassword.Text != txtBoxCPass.Text)
+            {
+                MessageBox.Show("Password do not match. Please Try Again", "Incomplete Form");
+                return;
+            }
+
+
+            //Email Validation
+            if (!Regex.IsMatch(txtBoxEmail.Text, "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$"))
+            {
+                MessageBox.Show("Email is not in correct format", "Incomplete Form");
+                return;
+            }
+
+            //Password Strenth
+            if (!Regex.IsMatch(txtBoxPassword.Text, "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"))
+            {
+                MessageBox.Show("Password must contaain an upercase, a lower a symbol and must be 8 characters long ", "Weak Password");
+                return;
+            }
+
+            SqlConnection con = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Rehbar\\Documents\\RegistrationDB.mdf;Integrated Security=True;Connect Timeout=30;Encrypt=True");
+            SqlCommand cmd = new SqlCommand("INSERT INTO Users VALUES ('" + txtBoxUserName.Text + "','" + txtBoxEmail.Text + "','" + txtBoxPassword.Text + "',)", con);
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+
+
+
+
+            //Confirmation
+            MessageBox.Show("Account Registered", "Success");
         }
     }
 }
