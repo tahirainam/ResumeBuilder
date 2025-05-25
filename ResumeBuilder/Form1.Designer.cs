@@ -68,6 +68,8 @@
             // 
             // progressBar
             // 
+            this.progressBar.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.progressBar.ForeColor = System.Drawing.Color.Black;
             this.progressBar.Location = new System.Drawing.Point(105, 223);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(522, 23);
